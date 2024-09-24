@@ -28,6 +28,9 @@
     <input type="text" id="message-input" placeholder="Type your message here...">
     <button id="send-button">Send</button>
 
+    <!-- New notification div -->
+    <div id="notification" style="color: red; margin-top: 10px;"></div>
+
     <script>
         $('#send-button').click(function(){
             var message = $('#message-input').val();
@@ -35,6 +38,10 @@
             $('#chat-box').append('<p><strong>You:</strong> ' + message + '</p>');
             $.post('/send_message/', {'message': message, 'csrfmiddlewaretoken': '{{ csrf_token }}'}, function(data){
                 $('#chat-box').append('<p><strong>Bot:</strong> ' + data.response + '</p>');
+                // New code to handle notifications
+                if(data.notification){
+                    $('#notification').text(data.notification);
+                }
                 $('#chat-box').scrollTop($('#chat-box')[0].scrollHeight);
             });
             $('#message-input').val('');
